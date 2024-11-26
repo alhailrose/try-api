@@ -22,12 +22,12 @@ app.get("/users", async (req, res) => {
     .select("name, email, birthdate, sex, height, weight");
 
   if (error) {
-    return response(500, error.message, "ERROR", res);
+    return response(500, [], "ERROR", res); // Respons data tetap array
   }
 
-  // Mengirimkan data sebagai array
-  response(200, data, "SUCCESS", res);
+  response(200, data, "SUCCESS", res); // Data tetap array
 });
+
 
 // Mendapatkan Pengguna Berdasarkan Email
 app.get("/users/:email", async (req, res) => {
@@ -40,12 +40,12 @@ app.get("/users/:email", async (req, res) => {
     .single();
 
   if (error) {
-    return response(404, error.message, "User not found", res);
+    return response(404, [], "User not found", res); // Tetap array meskipun kosong
   }
 
-  // Pastikan data dibungkus dalam array
-  response(200, [data], `Specific data by email '${email}'`, res);
+  response(200, [data], `Specific data by email '${email}'`, res); // Bungkus data dalam array
 });
+
 
 // Mendaftarkan Pengguna Baru
 app.post("/register", async (req, res) => {
@@ -56,12 +56,12 @@ app.post("/register", async (req, res) => {
     .insert([{ name, email, password, birthdate, sex, height, weight }]);
 
   if (error) {
-    return response(500, error.message, "Error registering user", res);
+    return response(500, [], "Error registering user", res); // Data kosong dalam array
   }
 
-  // Mengirimkan data sebagai array
-  response(200, [data], "User registered successfully", res);
+  response(201, [data], "User registered successfully", res); // Bungkus dalam array
 });
+
 
 // Login Pengguna
 app.post("/login", async (req, res) => {
@@ -74,15 +74,16 @@ app.post("/login", async (req, res) => {
     .single();
 
   if (error || !data) {
-    return response(404, [], "User not found", res);
+    return response(404, [], "User not found", res); // Tetap array kosong
   }
 
   if (data.password === password) {
-    response(200, [{ success: true }], "Login successful", res);
+    response(200, [{ success: true }], "Login successful", res); // Bungkus respons dalam array
   } else {
-    response(200, [{ success: false }], "Invalid email or password", res);
+    response(401, [{ success: false }], "Invalid email or password", res); // Sama
   }
 });
+
 
 // Memperbarui Data Pengguna
 app.put("/users/:email", async (req, res) => {
