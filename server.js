@@ -28,7 +28,6 @@ app.get("/users", async (req, res) => {
   response(200, data, "SUCCESS", res); // Data tetap array
 });
 
-
 // Mendapatkan Pengguna Berdasarkan Email
 app.get("/users/:email", async (req, res) => {
   const email = req.params.email;
@@ -46,7 +45,6 @@ app.get("/users/:email", async (req, res) => {
   response(200, [data], `Specific data by email '${email}'`, res); // Bungkus data dalam array
 });
 
-
 // Mendaftarkan Pengguna Baru
 app.post("/register", async (req, res) => {
   const { name, email, password, birthdate, sex, height, weight } = req.body;
@@ -62,7 +60,6 @@ app.post("/register", async (req, res) => {
   response(201, [data], "User registered successfully", res); // Bungkus dalam array
 });
 
-
 // Login Pengguna
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -74,16 +71,17 @@ app.post("/login", async (req, res) => {
     .single();
 
   if (error || !data) {
-    return response(404, [], "User not found", res); // Tetap array kosong
+    return res.status(404).json({ success: false, message: "User not found" });
   }
 
   if (data.password === password) {
-    response(200, [{ success: true }], "Login successful", res); // Bungkus respons dalam array
+    res.status(200).json({ success: true, message: "Login successful" });
   } else {
-    response(401, [{ success: false }], "Invalid email or password", res); // Sama
+    res
+      .status(200)
+      .json({ success: false, message: "Invalid email or password" });
   }
 });
-
 
 // Memperbarui Data Pengguna
 app.put("/users/:email", async (req, res) => {
